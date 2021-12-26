@@ -1,0 +1,8 @@
+---
+
+# Variables that are being processed/calculated. Placed higher in precedence
+fz: "{{lookup('dict',forward_zones)}}"
+rz: "{{lookup('dict',reverse_zones)}}"
+dns_domain: "{{calc_domain.key}}" # Used for setting up domain of the forward zone
+
+...

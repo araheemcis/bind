@@ -1,0 +1,55 @@
+---
+
+# Install and configure firewalld by default for bind
+firewalld: no
+
+# variables used for defining forward zone It constructs the line
+# @       IN SOA  {{soa_hostname}}{{dns_domain}}. {{soa_postmaster}}.{{dns_domain}}. (
+
+# forward_zones is a list of dictionaries that holds zone details
+forward_zones:
+  domain.com:                     # <-- Assign the domain name here (IMPORTANT)
+    dns_hostname: "dns"
+    dns_host_ip: "192.168.0.1"
+    soa_hostname: "dns."              # Should be a host name. Do add a . at the end. If not required just put ""
+    soa_postmaster: "root."           # email id name for dns administrator i.e. admin,root etc. Do add a . at the end   
+    mail_server: yes                  # if yes then DNS configuration is going to insert an MX entry and A record
+    mail_server_ip: "192.168.0.1"     # If the above is yes then Mail servers IP address is required
+    mail_hostname: "mail"             # Should be mail server hostname name. Do add a . at the end.
+    mail_mx_priority: 10              # Use this if the DNS need to process a mail server
+    zone_file: "db-for.domain.com"
+    zone_serial: '1'
+    zone_refresh: '1D'
+    zone_retry: '1H'
+    zone_expire: '1W'
+    zone_minimum: '3H'
+    zone_records: []
+
+reverse_zones:
+  0.0.10.in-addr.arpa:         # <-- Set the reverse zone syntax correctly (IMPORTANT)
+    dns_hostname: "dns"
+    dns_domain: "domain.com"         # Same as forward zone key
+    dns_host_octet: 1                 # DNS host octet. According to the IP defined in the forwards zone
+    soa_hostname: "dns."              # Should be a host name. Do add a . at the end. If not required just put ""
+    soa_postmaster: "root."           # email id name for dns administrator i.e. admin,root etc. Do add a . at the end
+    mail_server: yes                  # if yes then DNS configuration is going to insert an MX entry and A record
+    mail_octet: "1"                  # If the above is yes then Mail servers octet for PTR record is required
+    mail_hostname: "mail"             # Should be mail server hostname name. According to IP defined in the forward zone
+    zone_file: "db-rev.domain.com"
+    zone_serial: '1'
+    zone_refresh: '1D'
+    zone_retry: '1H'
+    zone_expire: '1W'
+    zone_minimum: '3H'
+    zone_records: []
+
+
+# Variables used in named.conf
+dns_query_subnet: "any;"          # Subnet for DNS name resolution. Can be ; separated IPs like "10.0.0.0/8;"
+dns_server_ip: "any;"             # IP address of DNS server this will include 127.0.0.1. Can be ; separated IPs like "10.0.0.2
+dns_forwarders: no                # Is there a requirement of DNS forwarding
+dns_forwarders_ip: "8.8.8.8;"     # Comma separated list of IP addresses to forward for public DNS resolution
+
+
+
+...

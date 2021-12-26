@@ -1,0 +1,20 @@
+{{ ansible_managed | comment(decoration="; ") }}
+$TTL 1D
+@       IN SOA  {{rz.value.soa_hostname}}{{rz.value.dns_domain}}. {{rz.value.soa_postmaster}}{{rz.value.dns_domain}}. (
+
+                                         {{ rz.value.zone_serial }}    ; serial 
+                                         {{ rz.value.zone_refresh }}   ; refresh
+                                         {{ rz.value.zone_retry }}     ; retry
+                                         {{ rz.value.zone_expire }}    ; expire
+                                         {{ rz.value.zone_minimum }} ) ; minimum ttl for zone
+@               IN NS   {{rz.value.dns_hostname}}.
+
+; Local IP Interfaces
+{{rz.value.dns_host_octet}}            IN PTR    {{rz.value.dns_hostname}}.{{rz.value.dns_domain}}.
+{% if rz.value.mail_server %}
+{{rz.value.mail_octet}}             IN PTR    {{rz.value.mail_hostname}}.{{rz.value.dns_domain}}.
+{% endif %}
+{% for record in rz.value.zone_records %}
+{{record}}
+{% endfor %}
+

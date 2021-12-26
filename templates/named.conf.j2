@@ -1,0 +1,50 @@
+{{ ansible_managed | comment }}
+options {
+ 	listen-on port 53              { 127.0.0.1; {{dns_server_ip}} };
+ 	listen-on-v6 port 53           { ::1; any; };
+ 	directory                      "/var/named";
+ 	dump-file                      "/var/named/data/cache_dump.db";
+ 	statistics-file                "/var/named/data/named_stats.txt";
+ 	memstatistics-file             "/var/named/data/named_mem_stats.txt";
+ 	pid-file                       "/run/named/named.pid";
+ 	session-keyfile                "/run/named/session.key";
+ 	allow-query                    { localhost; {{dns_query_subnet}} };
+ 	allow-query-cache              { localhost; {{dns_query_subnet}} };
+ 	recursion                      yes;
+ 	auth-nxdomain                  no;
+ 	dnssec-enable                  yes;
+ 	dnssec-validation              auto;
+ 	bindkeys-file                  "/etc/named.iscdlv.key";
+ 	managed-keys-directory         "/var/named/dynamic";
+ 	transfers-out                  100;
+        {% if dns_forwarders %}
+        forwarders { {{dns_forwarders_ip}} };
+        {% endif %}
+};
+
+logging {
+ 	channel  default_debug {
+ 	file     "data/named.run";
+ 	severity dynamic;
+ 	};
+};
+
+# Forwards Zones
+{% for item in forward_zones|dict2items %}
+zone "{{ item.key }}" IN {
+ type           master;
+ file           "/var/named/data/{{ item.value.zone_file }}";
+ allow-transfer { none; };
+};
+{% endfor %}
+
+{% for item in reverse_zones|dict2items %}
+zone "{{ item.key }}" IN {
+ type           master;
+ file           "/var/named/data/{{ item.value.zone_file }}";
+ allow-transfer { none; };
+};
+{% endfor %}
+
+
+# End Zones

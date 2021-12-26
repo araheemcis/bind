@@ -1,0 +1,21 @@
+---
+- name: Install firewalld
+  yum:
+    name: firewalld
+    state: present
+  notify:
+    - Restart firewall daemon
+
+- name: Start and enable firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Configure firewalld to allow inbound DNS requests
+  firewalld:
+    service: dns
+    state: enabled
+    permanent: yes
+    immediate: yes
+...

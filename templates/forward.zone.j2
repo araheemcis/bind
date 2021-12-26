@@ -1,0 +1,24 @@
+{{ ansible_managed | comment(decoration="; ") }}
+$TTL 1D
+@       IN SOA  {{fz.value.soa_hostname}}{{fz.key}}. {{fz.value.soa_postmaster}}{{fz.key}}. ( 
+
+                                         {{ fz.value.zone_serial }}    ; serial 
+                                         {{ fz.value.zone_refresh }}   ; refresh
+                                         {{ fz.value.zone_retry }}     ; retry
+                                         {{ fz.value.zone_expire }}    ; expire
+                                         {{ fz.value.zone_minimum }} ) ; minimum ttl for zone
+@               IN NS   {{fz.value.dns_hostname}}.{{fz.key}}.
+{% if fz.value.mail_server %}
+@               IN MX   {{fz.value.mail_mx_priority}}      {{fz.value.mail_hostname}}.{{fz.key}}.
+{% endif %}
+
+; Local IP address of nameserver
+{{fz.value.dns_hostname}}            IN A    {{fz.value.dns_host_ip}}
+;
+{% if fz.value.mail_server %}
+{{fz.value.mail_hostname}}             IN A    {{fz.value.mail_server_ip}}
+{% endif %}
+;
+{% for record in fz.value.zone_records %}
+{{record}}
+{% endfor %}

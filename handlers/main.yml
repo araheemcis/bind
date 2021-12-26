@@ -1,0 +1,14 @@
+---
+
+- name: Restart firewall daemon
+  service:
+    name: firewalld
+    state: restarted
+
+- name: Restart BIND9 daemon
+  service:
+    name: "{{ bind_service }}"
+    state: restarted
+    enabled: yes
+
+...
