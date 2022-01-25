@@ -37,7 +37,7 @@
     validate: '/usr/sbin/named-checkzone -q -i full {{ item.value.zone_file }} %s'
   loop: "{{ lookup('dict',forward_zones, wantlist=True) }}"
   vars:
-    fz: "{{item}}"
+    fz: "{{ item }}"
   notify:
   - Restart BIND9 daemon
 
@@ -54,7 +54,7 @@
     validate: '/usr/sbin/named-checkzone -q -i full {{ item.value.zone_file }} %s'
   loop: "{{ lookup('dict',reverse_zones, wantlist=True) }}"
   vars:
-    rz: "{{item}}"
+    rz: "{{ item }}"
   notify:
   - Restart BIND9 daemon
 
