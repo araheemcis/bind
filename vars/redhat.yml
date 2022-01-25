@@ -1,6 +1,6 @@
 ---
 
-bind_package: bind-chroot
+bind_package: bind-utils,bind-chroot
 bind_service: named-chroot
 
 ...

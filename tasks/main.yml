@@ -19,7 +19,7 @@
   when:
   - firewalld|bool
 
-- name: Installing {{ bind_package }} package
+- name: Installing BIND packages
   yum:
     name: "{{ bind_package }}"
     state: present
